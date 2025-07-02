@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const GurdwaraEntranceArc = () => {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="flex justify-center items-center min-h-screen bg-white">
+      <svg
+        viewBox="0 0 1000 300"
+        width="100%"
+        height="300"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Entrance Arch Curve */}
+        <path
+          d="
+            M 0 300
+            Q 250 50, 500 100
+            Q 750 50, 1000 300
+          "
+          fill="none"
+          stroke="black"
+          strokeWidth="4"
+        />
 
-export default App
+        {/* Optional pointed center peak */}
+        <path
+          d="
+            M 485 100
+            L 500 30
+            L 515 100
+          "
+          fill="none"
+          stroke="black"
+          strokeWidth="3"
+        />
+
+        {/* Optional circle with symbol */}
+        <circle cx="500" cy="30" r="18" stroke="black" strokeWidth="2" fill="none" />
+        <text x="490" y="36" fontSize="18" fontFamily="serif">ੴ</text>
+      </svg>
+    </div>
+  );
+};
+
+export default GurdwaraEntranceArc;

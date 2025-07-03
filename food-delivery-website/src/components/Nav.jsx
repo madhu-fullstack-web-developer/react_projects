@@ -14,6 +14,8 @@ function Nav() {
   }, [input])
 
   let items=useSelector(state=>state.cart)
+  console.log(items);
+  
   return (
     <div className='w-full h-[100px] flex justify-between items-center px-5 md:px-8'>
     <div className='w-[60px] h-[60px] bg-white flex justify-center items-center rounded-md shadow-xl'>

@@ -2,6 +2,8 @@ import sendEmail from '../config/sendEmail.js'
 import UserModel from '../models/user.model.js'
 import bcryptjs from 'bcryptjs'
 import verifyEmailTemplate from '../utils/verifyEmailTemplate.js'
+import generatedAccessToken from '../utils/generatedAccessToken.js'
+import generatedRefreshToken from '../utils/generatedRefreshToken.js'
 
 export async function registerUserController(request,response) {
     try {
@@ -64,7 +66,7 @@ export async function registerUserController(request,response) {
     }
 }
 
-export async function verifyEmailController(request,response){
+export async function verifyEmailController(request,response) {
     try {
         const { code } = request.body
 
@@ -97,9 +99,17 @@ export async function verifyEmailController(request,response){
 }
 
 //login controller
-export async function loginController(request,response){
+export async function loginController(request,response) {
     try {
         const { email , password } = request.body
+
+        if(!email || !password){
+            return response.status(400).json({
+                message : "Provide email, password",
+                error : true,
+                success : false
+            })
+        }
 
         const user = await UserModel.findOne({ email })
 
@@ -129,8 +139,27 @@ export async function loginController(request,response){
             })
         }
 
-        const accessToken = await generatedAccessToken(user._id)
+        const accesstoken = await generatedAccessToken(user._id)
         const refreshToken = await generatedRefreshToken(user._id)
+
+        const cookiesOption = {
+            httpOnly : true,
+            secure : true,
+            sameSite : "None"
+        }
+
+        response.cookie('accessToken',accesstoken,cookiesOption)
+        response.cookie('refreshToken',refreshToken,cookiesOption)
+
+        return response.json({
+            message : "Login successfully",
+            error : false,
+            success : true,
+            data : {
+                accesstoken,
+                refreshToken
+            }
+        })
         
     } catch (error) {
         return response.status(500).json({
@@ -140,3 +169,36 @@ export async function loginController(request,response){
         })
     }
 }
+
+//logout controller
+export async function logoutController(request, response) {
+    try {
+        const userId = request.userId; 
+
+        const cookiesOption = {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None"
+        };
+
+        response.clearCookie("accessToken", cookiesOption);
+        response.clearCookie("refreshToken", cookiesOption);
+
+        await UserModel.findByIdAndUpdate(userId, {
+            refresh_token: ""
+        });
+
+        return response.json({
+            message: "Logout successfully",
+            error: false,
+            success: true
+        });
+    } catch (error) {
+        return response.status(500).json({
+            message: error.message || error, 
+            error: true,
+            success: false
+        });
+    }
+}
+
